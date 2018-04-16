@@ -30,7 +30,7 @@ async def on_message(message):
         em.set_footer(text='Powered by random-d.uk')
         await message.channel.send(embed=em)
     if message.content.lower() == '!help':
-        em = discord.Embed(title='Ducky Help',description='**!duck**: Gives you a random duck\n**!getduck** [number]: Gives you a specific duck\n**!info***: Gives you some info about the bot\n**!invite**: Invite this bot\n**!help**: Shows this message')
+        em = discord.Embed(title='Ducky Help',description='**!duck**: Gives you a random duck\n**!getduck** [number]: Gives you a specific duck\n**!info**: Gives you some info about the bot\n**!invite**: Invite this bot**!userinfo [mention]**: Information about a user\n**!serverinfo**: Information about the server the bot is on\n**!help**: Shows this message')
         em.set_author(name=str(client.user), icon_url=client.user.avatar_url)
         r = requests.get('https://api.random-d.uk/random')
         answer = r.json()
@@ -54,5 +54,39 @@ async def on_message(message):
         await message.channel.send(embed=em)
     if message.content == '!invite':
         await message.channel.send('https://random-d.uk/invite')
+    if message.content.lower().startswith('!userinfo'):
+        member = message.mentions[0]
+        roles = []
+        for role in member.roles:
+            if role.is_default():
+                continue
+            else:
+                roles.append(role.mention)
+        em = discord.Embed(title='Userinfo',color=member.color)
+        em.set_author(name=str(member), icon_url=member.avatar_url)
+        em.add_field(name='Joined at',value=str(member.joined_at.strftime('%a, %-d %b %Y at %H:%M:%S GMT')))
+        em.add_field(name='Created at', value=str(member.created_at.strftime('%a, %-d %b %Y at %H:%M:%S GMT')))
+        em.add_field(name='Roles [{}]'.format(len(roles)), value=' '.join(roles))
+        em.add_field(name='Status',value=str(member.status))
+        if member.id == member.guild.owner.id:
+            em.add_field(name='Owner',value='Yes')
+        if member.is_avatar_animated():
+            em.add_field(name='Nitro',value='Yes')
+        em.set_thumbnail(url=member.avatar_url)
+        em.set_footer(text='ID: ' + str(member.id),icon_url=message.guild.icon_url)
+        await message.channel.send(embed=em)
+    if message.content.lower().startswith('!serverinfo'):
+        em = discord.Embed(title='Serverinfo')
+        em.set_author(name=str(message.guild), icon_url=message.guild.icon_url)
+        em.set_thumbnail(url=message.guild.icon_url)
+        em.add_field(name='Region',value=str(message.guild.region))
+        em.add_field(name='Verification Level',value=str(message.guild.verification_level))
+        em.add_field(name='Owner',value=str(message.guild.owner))
+        em.add_field(name='Membercount',value=str(message.guild.member_count))
+        em.add_field(name='Large',value=str(message.guild.large))
+        em.add_field(name='Created at',value=str(message.guild.created_at.strftime('%a, %-d %b %Y at %H:%M:%S GMT')))
+        em.set_footer(text='ID: ' + str(message.guild.id),icon_url=message.guild.icon_url)
+        await message.channel.send(embed=em)
+
 
 client.run(token)
