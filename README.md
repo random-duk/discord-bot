@@ -1,2 +1,2 @@
-# discord-bot
-Example bot for Discord
+# Ducky
+Example bot for use with random-d.uk
