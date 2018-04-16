@@ -30,7 +30,7 @@ async def on_message(message):
         em.set_footer(text='Powered by random-d.uk')
         await message.channel.send(embed=em)
     if message.content.lower() == '!help':
-        em = discord.Embed(title='Ducky Help',description='**!duck**: Gives you a random duck\n**!getduck** [number]: Gives you a specific duck\n**!help**: Shows this message')
+        em = discord.Embed(title='Ducky Help',description='**!duck**: Gives you a random duck\n**!getduck** [number]: Gives you a specific duck\n**!info***: Gives you some info about the bot\n**!invite**: Invite this bot\n**!help**: Shows this message')
         em.set_author(name=str(client.user), icon_url=client.user.avatar_url)
         r = requests.get('https://api.random-d.uk/random')
         answer = r.json()
@@ -49,7 +49,10 @@ async def on_message(message):
         em.add_field(name='Website', value='https://random-d.uk')
         em.add_field(name='Memory Usage',value=str(round(process.memory_info()[0]/1000000,0)) + ' MB')
         em.add_field(name='CPU Usage', value=str(process.cpu_percent(0.1)) + '%')
+        em.add_field(name='Github', value='https://github.com/random-duk/discord-bot')
         em.set_footer(text='Made by Auxim#0001')
         await message.channel.send(embed=em)
+    if message.content == '!invite':
+        await message.channel.send('https://random-d.uk/invite')
 
 client.run(token)
