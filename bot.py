@@ -55,7 +55,10 @@ async def on_message(message):
     if message.content == '!invite':
         await message.channel.send('https://random-d.uk/invite')
     if message.content.lower().startswith('!userinfo'):
-        member = message.mentions[0]
+        try:
+            member = message.mentions[0]
+        except IndexError:
+            member = message.author
         roles = []
         for role in member.roles:
             if role.is_default():
